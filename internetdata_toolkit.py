@@ -6,9 +6,9 @@ from typing import List
 
 from superagi.tools.base_tool import BaseTool, BaseToolkit
 
-from InternetDataTool.news_headlines import NewsHeadlinesTool
-from InternetDataTool.search_internet import InternetSearchTool
-from InternetDataTool.website_content import WebsiteContentTool
+from superagi.tools.external_tools.SuperAGI_internetDataToolkit.news_headlines import NewsHeadlinesTool
+from superagi.tools.external_tools.SuperAGI_internetDataToolkit.search_internet import InternetSearchTool
+from superagi.tools.external_tools.SuperAGI_internetDataToolkit.website_content import WebsiteContentTool
 
 
 class InternetDataToolKit(BaseToolkit, ABC):
