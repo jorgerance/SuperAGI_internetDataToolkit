@@ -25,7 +25,7 @@ class NewsHeadlinesTool(BaseTool):
     """
     name: str = "News Headlines Tool"
     args_schema: Type[BaseModel] = NewsHeadlinesInput
-    description: str = "Retrieve the latest news headlines in a markdown-formatted string."
+    description: str = "Retrieve the latest news headlines with title, link and source."
 
     def _execute(self, limit: int = 8) -> str:
         """
@@ -35,7 +35,7 @@ class NewsHeadlinesTool(BaseTool):
             limit : The maximum number of news headlines to retrieve in one cycle. Defaults to 8.
 
         Returns:
-            A markdown-formatted string containing an array of news headlines with title, link and source, or an error message if no headlines are found.
+            News headlines with title, link and source, or an error message if no headlines are found.
         """
         return self.news_headlines(limit=limit)
 
@@ -50,7 +50,7 @@ class NewsHeadlinesTool(BaseTool):
             tag : The tag representing the type of news to fetch. Defaults to 'news'.
 
         Returns:
-            A JSON-formatted string containing the latest news headlines or an error message if no headlines are found.
+            The latest news headlines or an error message if no headlines are found.
         """
         def _decode_unicode_escape_sequences(input_string: str) -> str:
             """Decode Unicode escape sequences in a string."""
