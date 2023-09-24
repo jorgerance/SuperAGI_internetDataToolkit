@@ -40,7 +40,7 @@ class NewsHeadlinesTool(BaseTool):
         return self.news_headlines(limit=limit)
 
     @retry(tries=2, delay=4, backoff=4)
-    def news_headlines(self, limit: int = 8, tag: str = 'news', format: str = 'json') -> str:
+    def news_headlines(self, limit: int = 8, tag: str = 'news', format: str = 'markdown') -> str:
         # sourcery skip: assign-if-exp
         """
         Fetch and return the latest news headlines.
