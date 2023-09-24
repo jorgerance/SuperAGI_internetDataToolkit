@@ -10,7 +10,6 @@ from pydantic import BaseModel, Field
 from retry import retry
 from superagi.tools.base_tool import BaseTool
 
-
 class NewsHeadlinesInput(BaseModel):
     limit: int = Field(..., description="The maximum number of news headlines to retrieve in one cycle. Defaults to 8.")
 
@@ -41,7 +40,7 @@ class NewsHeadlinesTool(BaseTool):
         return self.news_headlines(limit=limit)
 
     @retry(tries=2, delay=4, backoff=4)
-    def news_headlines(self, limit: int = 8, tag: str = 'news') -> str:
+    def news_headlines(self, limit: int = 8, tag: str = 'news', format: str = 'markdown') -> str:
         # sourcery skip: assign-if-exp
         """
         Fetch and return the latest news headlines.
@@ -62,6 +61,23 @@ class NewsHeadlinesTool(BaseTool):
             characters_to_preserve = ''' !¡"#$%&'()*+,-0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~áàäçéèëíìïñóòöúùüÁÀÄÇÉÈËÍÌÏÑÓÒÖÚÙÜ«»‘’´“”·.‚'''
             pattern = f'[^{re.escape(characters_to_preserve)}]+'
             return re.sub(pattern, '', text)
+
+        def _format_to_markdown(data_list) -> str:
+            """
+            Formats a list of dictionaries to a pretty-formatted Markdown string.
+
+            :param data_list: List of dictionaries.
+            :type data_list: list
+            :return: Pretty-formatted Markdown string.
+            :rtype: str
+            """
+            markdown_str = ""
+            for i, data in enumerate(data_list, start=1):
+                markdown_str += f"{i}. "
+                for key, value in data.items():
+                    markdown_str += f"**{key.capitalize()}:** {value}  \n"
+                markdown_str += "\n"
+            return markdown_str
 
         # Set headers and query parameters for the HTTP request
         headers = {
@@ -93,14 +109,16 @@ class NewsHeadlinesTool(BaseTool):
         headlines = [
             {
                 "title": f"{_remove_unwanted_characters(_decode_unicode_escape_sequences(headline['title']))}",
-                "link": f"{headline['link']}"
-                #"source": f"{headline['sourcetitle']}"
+                "link": f"{headline['link']}",
+                "source": f"{headline['sourcetitle']}"
             }
             for idx, headline in enumerate(news) if idx < limit
         ]
 
         # Return the JSON-formatted string or an error message if no headlines are found
         if headlines:
+            if format == 'markdown':
+                return _format_to_markdown(headlines)
             return json.dumps(headlines)
         else:
             return "No news found."
