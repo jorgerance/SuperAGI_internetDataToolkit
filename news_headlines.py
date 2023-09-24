@@ -40,7 +40,7 @@ class NewsHeadlinesTool(BaseTool):
         return self.news_headlines(limit=limit)
 
     @retry(tries=2, delay=4, backoff=4)
-    def news_headlines(self, limit: int = 8, tag: str = 'news', format: str = 'markdown') -> str:
+    def news_headlines(self, limit: int = 8, tag: str = 'news', format: str = 'pretty') -> str:
         # sourcery skip: assign-if-exp
         """
         Fetch and return the latest news headlines.
@@ -79,6 +79,26 @@ class NewsHeadlinesTool(BaseTool):
                 markdown_str += "\n"
             return markdown_str+"\n```"
 
+
+        def _format_to_pretty(data_list: list) -> str:
+            """
+            Formats a list of dictionaries to a pretty-formatted string.
+
+            :param data_list: List of dictionaries.
+            :type data_list: list
+            :return: Pretty-formatted string.
+            :rtype: str
+            """
+            pretty_str = "\n"
+            for i, data in enumerate(data_list, start=1):
+                pretty_str += f"{i:>2}. "
+                for key, value in data.items():
+                    if key == 'title':
+                        pretty_str += f"{value} \n"
+                    else:
+                        pretty_str += f"    {key}: {value} \n"
+                pretty_str += "\n"
+            return pretty_str+"\n"
         # Set headers and query parameters for the HTTP request
         headers = {
             'Accept': "application/json",
@@ -119,6 +139,8 @@ class NewsHeadlinesTool(BaseTool):
         if headlines:
             if format == 'markdown':
                 return _format_to_markdown(headlines)
+            elif format == 'pretty':
+                return _format_to_pretty(headlines)
             return json.dumps(headlines, indent=2)
         else:
             return "No news found."
