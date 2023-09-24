@@ -62,7 +62,7 @@ class NewsHeadlinesTool(BaseTool):
             pattern = f'[^{re.escape(characters_to_preserve)}]+'
             return re.sub(pattern, '', text)
 
-        def _format_to_markdown(data_list) -> str:
+        def _format_to_markdown(data_list: list) -> str:
             """
             Formats a list of dictionaries to a pretty-formatted Markdown string.
 
