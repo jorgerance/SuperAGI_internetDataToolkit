@@ -71,13 +71,13 @@ class NewsHeadlinesTool(BaseTool):
             :return: Pretty-formatted Markdown string.
             :rtype: str
             """
-            markdown_str = ""
+            markdown_str = "\n\n```markdown\n"
             for i, data in enumerate(data_list, start=1):
                 markdown_str += f"{i}. "
                 for key, value in data.items():
                     markdown_str += f"**{key.capitalize()}:** {value}  \n"
                 markdown_str += "\n"
-            return markdown_str
+            return markdown_str+"\n```"
 
         # Set headers and query parameters for the HTTP request
         headers = {
