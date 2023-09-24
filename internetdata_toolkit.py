@@ -9,6 +9,7 @@ from superagi.tools.base_tool import BaseTool, BaseToolkit
 from superagi.tools.external_tools.SuperAGI_internetDataToolkit.news_headlines import NewsHeadlinesTool
 from superagi.tools.external_tools.SuperAGI_internetDataToolkit.search_internet import InternetSearchTool
 from superagi.tools.external_tools.SuperAGI_internetDataToolkit.website_content import WebsiteContentTool
+from superagi.tools.external_tools.SuperAGI_internetDataToolkit.check_file_existence import CheckFileExistenceTool
 
 
 class InternetDataToolKit(BaseToolkit, ABC):
@@ -27,7 +28,7 @@ class InternetDataToolKit(BaseToolkit, ABC):
         Returns:
             List[BaseTool]: A list of tool instances available in the toolkit.
         """
-        return [InternetSearchTool(), NewsHeadlinesTool(), WebsiteContentTool()]
+        return [InternetSearchTool(), NewsHeadlinesTool(), WebsiteContentTool(), CheckFileExistenceTool()]
 
     def get_env_keys(self) -> List[str]:
         """
