@@ -36,7 +36,7 @@ class NewsHeadlinesTool(BaseTool):
             limit : The maximum number of news headlines to retrieve in one cycle. Defaults to 8.
 
         Returns:
-            A JSON-formatted string containing an array of news headlines with title, link, and source, or an error message if no headlines are found.
+            A JSON-formatted string containing an array of news headlines with title and link, or an error message if no headlines are found.
         """
         return self.news_headlines(limit=limit)
 
@@ -87,8 +87,8 @@ class NewsHeadlinesTool(BaseTool):
         headlines = [
             {
                 "title": f"{decode_unicode_escape_sequences(headline['title'])}",
-                "url": f"{headline['link']}",
-                "source": f"{headline['sourcetitle']}"
+                "link": f"{headline['link']}"
+                #"source": f"{headline['sourcetitle']}"
             }
             for idx, headline in enumerate(news) if idx < limit
         ]
