@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import requests
 from typing import Type
 
 import trafilatura
@@ -49,7 +50,7 @@ class WebsiteContentTool(BaseTool):
             A JSON-formatted string containing the URL and its corresponding plain text content.
         """
         try:
-            plaintext_content = trafilatura.extract(trafilatura.fetch_url(url))
+            plaintext_content = trafilatura.extract(trafilatura.fetch_url(url)) or requests.get(url).text
             json_content = {
                 "url": url,
                 "plaintext_content": plaintext_content
@@ -57,3 +58,11 @@ class WebsiteContentTool(BaseTool):
             return json.dumps(json_content)
         except Exception as e:
             return json.dumps({"error": str(e), "url": url}, indent=1)
+
+
+
+#if __name__ == "__main__":
+#    url = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
+#    c = trafilatura.extract(trafilatura.fetch_url(url))
+#    if not c:
+#        c = requests.get(url).text
