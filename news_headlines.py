@@ -25,7 +25,7 @@ class NewsHeadlinesTool(BaseTool):
     """
     name: str = "News Headlines Tool"
     args_schema: Type[BaseModel] = NewsHeadlinesInput
-    description: str = "Retrieve the latest news headlines in a JSON-formatted array of title, link, and source."
+    description: str = "Retrieve the latest news headlines in a markdown-formatted string."
 
     def _execute(self, limit: int = 8) -> str:
         """
@@ -35,7 +35,7 @@ class NewsHeadlinesTool(BaseTool):
             limit : The maximum number of news headlines to retrieve in one cycle. Defaults to 8.
 
         Returns:
-            A JSON-formatted string containing an array of news headlines with title and link, or an error message if no headlines are found.
+            A markdown-formatted string containing an array of news headlines with title, link and source, or an error message if no headlines are found.
         """
         return self.news_headlines(limit=limit)
 
@@ -115,7 +115,7 @@ class NewsHeadlinesTool(BaseTool):
             for idx, headline in enumerate(news) if idx < limit
         ]
 
-        # Return the JSON-formatted string or an error message if no headlines are found
+        # Return the JSON-formatted / markdown-formatted string or an error message if no headlines are found or if an error occurs
         if headlines:
             if format == 'markdown':
                 return _format_to_markdown(headlines)
