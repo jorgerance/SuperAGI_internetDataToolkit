@@ -12,7 +12,7 @@ from superagi.tools.base_tool import BaseTool
 
 
 class NewsHeadlinesInput(BaseModel):
-    limit: int = Field(..., description="The maximum number of news headlines to retrieve in one cycle. Defaults to 10.")
+    limit: int = Field(..., description="The maximum number of news headlines to retrieve in one cycle. Defaults to 8.")
 
 
 class NewsHeadlinesTool(BaseTool):
@@ -26,14 +26,14 @@ class NewsHeadlinesTool(BaseTool):
     """
     name: str = "News Headlines Tool"
     args_schema: Type[BaseModel] = NewsHeadlinesInput
-    description: str = "Retrieve the latest news headlines."
+    description: str = "Retrieve the latest news headlines in a JSON-formatted array of title, link, and source."
 
-    def _execute(self, limit: int = 10) -> str:
+    def _execute(self, limit: int = 8) -> str:
         """
         Execute the News Headlines Tool.
 
         Args:
-            limit : The maximum number of news headlines to retrieve in one cycle. Defaults to 10.
+            limit : The maximum number of news headlines to retrieve in one cycle. Defaults to 8.
 
         Returns:
             A JSON-formatted string containing an array of news headlines with title, link, and source, or an error message if no headlines are found.
@@ -41,7 +41,8 @@ class NewsHeadlinesTool(BaseTool):
         return self.news_headlines(limit=limit)
 
     @retry(tries=2, delay=4, backoff=4)
-    def news_headlines(self, limit: int = 10, tag: str = 'news') -> str:
+    def news_headlines(self, limit: int = 8, tag: str = 'news') -> str:
+        # sourcery skip: assign-if-exp
         """
         Fetch and return the latest news headlines.
 
@@ -85,14 +86,15 @@ class NewsHeadlinesTool(BaseTool):
         # Parse and process the news headlines
         headlines = [
             {
-                "title": decode_unicode_escape_sequences(headline['title']),
-                "url": headline['link'],
-                "source": headline['sourcetitle']
+                "title": f"{decode_unicode_escape_sequences(headline['title'])}",
+                "url": f"{headline['link']}",
+                "source": f"{headline['sourcetitle']}"
             }
             for idx, headline in enumerate(news) if idx < limit
         ]
 
         # Return the JSON-formatted string or an error message if no headlines are found
-        if not headlines:
+        if headlines:
+            return json.dumps(headlines)
+        else:
             return "No news found."
-        return json.dumps({"latest_news_headlines": headlines}, indent=1)

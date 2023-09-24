@@ -24,7 +24,7 @@ class WebsiteContentTool(BaseTool):
     """
     name: str = "Website Content Tool"
     args_schema: Type[BaseModel] = WebsiteContentInput
-    description: str = "Fetch website content in plain text."
+    description: str = "Fetch website content in plain text returning a JSON-formatted string."
 
     def _execute(self, url: str = "") -> str:
         """
@@ -54,6 +54,6 @@ class WebsiteContentTool(BaseTool):
                 "url": url,
                 "plaintext_content": plaintext_content
             } if plaintext_content else {"error": "Failed to extract content from the website.", "url": url}
-            return json.dumps(json_content, indent=1)
+            return json.dumps(json_content)
         except Exception as e:
             return json.dumps({"error": str(e), "url": url}, indent=1)

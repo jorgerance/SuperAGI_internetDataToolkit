@@ -27,7 +27,7 @@ class InternetSearchTool(BaseTool):
     """
     name: str = "Internet Search Tool"
     args_schema: Type[BaseModel] = InternetSearchInput
-    description: str = "Retrieve information on a specified topic from the internet."
+    description: str = "Retrieve information on a specified topic from the internet returning a JSON-formatted array of results."
 
     def _execute(self, query: str = "", limit: int = 5) -> str:
         """
@@ -90,4 +90,4 @@ class InternetSearchTool(BaseTool):
         # Return the JSON-formatted string or an error message if no results are found
         if not results_json:
             return f"Google search returned no results for query \"{query}\""
-        return json.dumps(json_object, indent=1)
+        return json.dumps(json_object)
