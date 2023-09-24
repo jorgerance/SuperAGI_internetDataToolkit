@@ -56,10 +56,10 @@ class InternetSearchTool(BaseTool):
             A JSON-formatted string containing the search results or an error message if no results are found.
         """
         # Define the set of characters to preserve in the search results
-        _clean_charset = ''' !¡"#$%&'()*+,-0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~áàäçéèëíìïñóòöúùüÁÀÄÇÉÈËÍÌÏÑÓÒÖÚÙÜ«»‘’´“”·.‚'''
 
-        def _remove_unwanted_characters(text: str, characters_to_preserve: str = _clean_charset) -> str:
+        def _remove_unwanted_characters(text: str) -> str:
             """Remove unwanted characters from a text."""
+            characters_to_preserve = ''' !¡"#$%&'()*+,-0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~áàäçéèëíìïñóòöúùüÁÀÄÇÉÈËÍÌÏÑÓÒÖÚÙÜ«»‘’´“”·.‚'''
             pattern = f'[^{re.escape(characters_to_preserve)}]+'
             return re.sub(pattern, '', text)
 

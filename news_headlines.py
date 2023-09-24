@@ -53,9 +53,15 @@ class NewsHeadlinesTool(BaseTool):
         Returns:
             A JSON-formatted string containing the latest news headlines or an error message if no headlines are found.
         """
-        def decode_unicode_escape_sequences(input_string: str) -> str:
+        def _decode_unicode_escape_sequences(input_string: str) -> str:
             """Decode Unicode escape sequences in a string."""
             return re.sub(r'\\u([0-9a-fA-F]{4})', lambda match: chr(int(match.group(1), 16)), input_string)
+
+        def _remove_unwanted_characters(text: str) -> str:
+            """Remove unwanted characters from a text."""
+            characters_to_preserve = ''' !¡"#$%&'()*+,-0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~áàäçéèëíìïñóòöúùüÁÀÄÇÉÈËÍÌÏÑÓÒÖÚÙÜ«»‘’´“”·.‚'''
+            pattern = f'[^{re.escape(characters_to_preserve)}]+'
+            return re.sub(pattern, '', text)
 
         # Set headers and query parameters for the HTTP request
         headers = {
@@ -86,7 +92,7 @@ class NewsHeadlinesTool(BaseTool):
         # Parse and process the news headlines
         headlines = [
             {
-                "title": f"{decode_unicode_escape_sequences(headline['title'])}",
+                "title": f"{_remove_unwanted_characters(_decode_unicode_escape_sequences(headline['title']))}",
                 "link": f"{headline['link']}"
                 #"source": f"{headline['sourcetitle']}"
             }
